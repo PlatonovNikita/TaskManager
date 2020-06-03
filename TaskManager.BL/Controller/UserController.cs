@@ -24,7 +24,7 @@ namespace TaskManager.BL.Controller
                 throw new ArgumentNullException("Имя не может быть пустым!", nameof(nikName));
             }
 
-            users = GetUsersDate();
+            users = GetUsersData();
 
             User = users.SingleOrDefault(user => user.NikName == nikName);
 
@@ -57,7 +57,7 @@ namespace TaskManager.BL.Controller
         /// Загружает пользователей из файла.
         /// </summary>
         /// <returns> Список пользователей. </returns>
-        public List<User> GetUsersDate()
+        public List<User> GetUsersData()
         {
             var formatter = new BinaryFormatter();
 
