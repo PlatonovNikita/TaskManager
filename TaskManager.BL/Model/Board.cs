@@ -4,6 +4,9 @@ using System.Text;
 
 namespace TaskManager.BL.Model
 {
+    /// <summary>
+    /// Доска с задачами.
+    /// </summary>
     [Serializable]
     public class Board
     {
@@ -41,6 +44,10 @@ namespace TaskManager.BL.Model
             Tasks = tasks;
         }
 
+        /// <summary>
+        /// Возвращает строковое представлениие доски задач.
+        /// </summary>
+        /// <returns></returns>
         public override string ToString()
         {
             string tasks = "";

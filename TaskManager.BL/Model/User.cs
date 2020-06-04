@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 
 namespace TaskManager.BL.Model
 {
@@ -23,9 +24,21 @@ namespace TaskManager.BL.Model
         /// Текущая задача.
         /// </summary>
         public Task Task { get; set; }
+
+        /// <summary>
+        /// Список досок доступных пользователю.
+        /// </summary>
+        public List<string> Boards { get; } = new List<string>();
         #endregion Свойства
 
-        public User(string name, string nikName, Task task = null)
+        /// <summary>
+        /// Создать пользователя.
+        /// </summary>
+        /// <param name="name"> Имя пользователя. </param>
+        /// <param name="nikName"> Ник пользователя. </param>
+        /// <param name="task"> Текущая задача пользователя. </param>
+        /// <param name="boards"> Список доступных пользователю задач. </param>
+        public User(string name, string nikName, Task task, List<string> boards)
         {
             #region Проверка
             if (string.IsNullOrWhiteSpace(name))
@@ -37,13 +50,28 @@ namespace TaskManager.BL.Model
             {
                 throw new ArgumentNullException("Ник не может быть пустым!", nameof(nikName));
             }
+
+            if (task == null)
+            {
+                throw new ArgumentNullException("Задача не может быть null!", nameof(task));
+            }
+
+            if (boards == null)
+            {
+                throw new ArgumentNullException("Список досок не может быть null!", nameof(boards));
+            }
             #endregion Проверка
 
             Name = name;
             NikName = nikName;
             Task = task;
+            Boards = boards;
         }
 
+        /// <summary>
+        /// Создать нового пользователя.
+        /// </summary>
+        /// <param name="nikName"> Ник пользователя. </param>
         public User(string nikName)
         {
             if (string.IsNullOrWhiteSpace(nikName))

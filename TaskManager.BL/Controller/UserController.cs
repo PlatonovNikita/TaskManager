@@ -7,10 +7,14 @@ using TaskManager.BL.Model;
 
 namespace TaskManager.BL.Controller
 {
+    /// <summary>
+    /// Контроллер пользователя.
+    /// </summary>
     public class UserController
     {
         List<User> users;
         public User User { get; }
+        public List<string> Boards { get { return User?.Boards; } }
         public bool IsNewUser { get; } = false;
 
         /// <summary>
@@ -51,6 +55,27 @@ namespace TaskManager.BL.Controller
 
             User.Name = name;
             Save();
+        }
+        
+        /// <summary>
+        /// Добавить новую доску в список доступных пользователю.
+        /// </summary>
+        /// <param name="nameBoard"> Имя доски. </param>
+        public void AddBoard(string nameBoard)
+        {
+            if (string.IsNullOrWhiteSpace(nameBoard))
+            {
+                throw new ArgumentNullException("Имя доски не может быть пустым!", nameof(nameBoard));
+            }
+            if (User.Boards.Count(b => b == nameBoard) == 0)
+            {
+                User.Boards.Add(nameBoard);
+                Save();
+            }
+            else
+            {
+                throw new AggregateException("Такая доска уже есть в списке!");
+            }
         }
 
         /// <summary>

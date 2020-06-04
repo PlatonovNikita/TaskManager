@@ -85,16 +85,12 @@ namespace TaskManager.BL.Model
             DeadLine = deadLine;
         }
 
-        public static bool operator true(Task t)
-        {
-            return t != null;
-        }
-
-        public static bool operator false(Task t)
-        {
-            return t == null;
-        }
-
+        /// <summary>
+        /// Парсит строку в соответствующе приоритеты.
+        /// </summary>
+        /// <param name="input"> Входная строка. </param>
+        /// <param name="priority"> Приоритет. </param>
+        /// <returns> Возвращает true, если удалось преобразовать строку. </returns>
         public static bool PriorityParse(string input, out Priority priority)
         {
             switch (input)

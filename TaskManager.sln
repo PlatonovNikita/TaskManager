@@ -3,9 +3,9 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 16
 VisualStudioVersion = 16.0.30114.105
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskManager.BL", "TaskManager.BL\TaskManager.BL.csproj", "{AA9D4083-470C-4EB2-9A6D-980D661BCD10}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TaskManager.BL", "TaskManager.BL\TaskManager.BL.csproj", "{AA9D4083-470C-4EB2-9A6D-980D661BCD10}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "TaskManager.CMD", "TaskManager.CMD\TaskManager.CMD.csproj", "{8225D594-F611-485A-93A0-1AD60A30A75B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "TaskManager.CMD", "TaskManager.CMD\TaskManager.CMD.csproj", "{8225D594-F611-485A-93A0-1AD60A30A75B}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
