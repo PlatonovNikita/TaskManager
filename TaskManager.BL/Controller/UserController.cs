@@ -1,8 +1,10 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
+using System.Xml.Serialization;
 using TaskManager.BL.Model;
 
 namespace TaskManager.BL.Controller
@@ -13,9 +15,24 @@ namespace TaskManager.BL.Controller
     public class UserController
     {
         List<User> users;
-        public User User { get; }
-        public List<string> Boards { get { return User?.Boards; } }
+        User User { get; }
+        public ReadOnlyCollection<string> Boards { get { return User.Boards.AsReadOnly(); } }
         public bool IsNewUser { get; } = false;
+        public string NikOfUser => User.NikName;
+        public Task TaskOfUser => User.Task;
+        public string NameOfUser 
+        { 
+            get 
+            { 
+                return User.Name; 
+            } 
+            set 
+            {
+                User.Name = value;
+                Save();
+            } 
+        }
+
 
         /// <summary>
         /// Создать контроллер пользователя.
@@ -56,6 +73,48 @@ namespace TaskManager.BL.Controller
             User.Name = name;
             Save();
         }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="boardController"></param>
+        /// <param name="task"></param>
+        public void TakeTask(BoardController boardController, Task task)
+        {
+            //TODO: Реализовать через интерфейс, который гарантирует у объекта есть метод TakeTask() и поле bool IsTakes 
+            if (boardController == null)
+            {
+                throw new ArgumentNullException("Контроллер доски не может быть null!", nameof(boardController));
+            }
+
+            if (!boardController.IsTakes)
+            {
+                throw new ArgumentException("PassTask должен быть вызван контроллером доски!");
+            }
+
+            User.Task = task;
+            Save();
+        }
+
+        /// <summary>
+        /// Изменяет текущую задачу пользователя на null.
+        /// </summary>
+        /// <param name="boardController"> Ссылка на контроллер доски. </param>
+        public void PassTask(BoardController boardController)
+        {
+            if (boardController == null)
+            {
+                throw new ArgumentNullException("Контроллер доски не может быть null!", nameof(boardController));
+            }
+
+            if (!boardController.IsPasses)
+            {
+                throw new ArgumentException("PassTask должен быть вызван контроллером доски!");
+            }
+
+            User.Task = null;
+            Save();
+        }
         
         /// <summary>
         /// Добавить новую доску в список доступных пользователю.
@@ -74,7 +133,7 @@ namespace TaskManager.BL.Controller
             }
             else
             {
-                throw new AggregateException("Такая доска уже есть в списке!");
+                throw new ArgumentException("Такая доска уже есть в списке!");
             }
         }
 

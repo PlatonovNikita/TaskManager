@@ -4,6 +4,21 @@ using System.Collections.Generic;
 namespace TaskManager.BL.Model
 {
     /// <summary>
+    /// Состояние задачи. 
+    /// Не_выполняется/Выполняется/Выполнена
+    /// </summary>
+    [Serializable]
+    public enum Status
+    {
+        NotPerformed = 0,
+        Performed = 1,
+        Complited = 2,
+        S1 = NotPerformed,
+        S2 = Performed,
+        S3 = Complited
+    }
+
+    /// <summary>
     /// Приоритет задачи.
     /// </summary>
     [Serializable]
@@ -17,6 +32,7 @@ namespace TaskManager.BL.Model
         second = P2,
         third = P3
     }
+
     /// <summary>
     /// Задача.
     /// </summary>
@@ -29,7 +45,7 @@ namespace TaskManager.BL.Model
         /// </summary>
         public string Name { get; }
 
-        string executorsNik;
+        string executorsNik = null;
         /// <summary>
         /// Ник исполниителя задачи.
         /// </summary>
@@ -42,6 +58,33 @@ namespace TaskManager.BL.Model
             {
                 executorsNik = (!string.IsNullOrWhiteSpace(value)) ? value : throw new ArgumentNullException("Ник не  может быть пустым!");
             } 
+        }
+
+        Status status = Status.NotPerformed;
+        /// <summary>
+        /// Состояние задачи. 
+        /// Не_выполняется/Выполняется/Выполнена
+        /// </summary>
+        public Status Status
+        {
+            get
+            {
+                return status;
+            }
+            set
+            {
+                if (status == Status.Complited)
+                {
+                    throw new ArgumentException("Эта задача уже выполненна!");
+                }
+
+                if (value == Status.Complited && status == Status.NotPerformed)
+                {
+                    throw new ArgumentException("Эта задача никем не выполнялась!");
+                }
+
+                status = value;
+            }
         }
 
         /// <summary>
@@ -85,45 +128,7 @@ namespace TaskManager.BL.Model
             DeadLine = deadLine;
         }
 
-        /// <summary>
-        /// Парсит строку в соответствующе приоритеты.
-        /// </summary>
-        /// <param name="input"> Входная строка. </param>
-        /// <param name="priority"> Приоритет. </param>
-        /// <returns> Возвращает true, если удалось преобразовать строку. </returns>
-        public static bool PriorityParse(string input, out Priority priority)
-        {
-            switch (input)
-            {
-                case "P4":
-                    priority = Priority.P4;
-                    return true;
-                case "P3":
-                    priority = Priority.P3;
-                    return true;
-                case "P2":
-                    priority = Priority.P2;
-                    return true;
-                case "P1":
-                    priority = Priority.P1;
-                    return true;
-                case "first":
-                    priority = Priority.P1;
-                    return true;
-                case "second":
-                    priority = Priority.P2;
-                    return true;
-                case "third":
-                    priority = Priority.P3;
-                    return true;
-                case "":
-                    priority = Priority.P4;
-                    return true;
-                default:
-                    priority = Priority.P4;
-                    return false;
-            }
-        }
+
 
         /// <summary>
         /// Возвращает строковое представление задачи.
@@ -131,7 +136,7 @@ namespace TaskManager.BL.Model
         /// <returns></returns>
         public override string ToString()
         {
-            return $"{Name}\nПриоритет: {Priority}\nСрок исполнения: {Period} дня(дней)";
+            return $"{Name}\nСостояние: {Status}\nПриоритет: {Priority}\nСрок исполнения: {Period} дня(дней)";
         }
 
 

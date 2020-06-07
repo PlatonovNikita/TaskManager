@@ -10,10 +10,21 @@ namespace TaskManager.BL.Model
     public class User
     {
         #region Свойства
+        string name = "";
         /// <summary>
         /// Имя пользвателя.
         /// </summary>
-        public string Name { get; set; }
+        public string Name 
+        { 
+            get 
+            {
+                return name;
+            }
+            set 
+            {
+                name = (!string.IsNullOrWhiteSpace(value)) ? value : throw new ArgumentNullException("Имя не может быть пустым!", nameof(name));
+            } 
+        }
 
         /// <summary>
         /// Уникальное ник пользователя.
@@ -23,7 +34,7 @@ namespace TaskManager.BL.Model
         /// <summary>
         /// Текущая задача.
         /// </summary>
-        public Task Task { get; set; }
+        public Task Task { get; set; } = null;
 
         /// <summary>
         /// Список досок доступных пользователю.
