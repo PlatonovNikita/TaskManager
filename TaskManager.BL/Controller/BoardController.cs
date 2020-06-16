@@ -49,19 +49,19 @@ namespace TaskManager.BL.Controller
         /// <param name="task"> Задача. </param>
         public void AddTask(Task task)
         {
+            #region Проверки
             if (task == null)
             {
                 throw new ArgumentNullException("Задача не может быть null!", nameof(task));
             }
-            if (Board.Tasks.Count(t => t.Name == task.Name) == 0)
-            {
-                Board.Tasks.Add(task);
-                Save();
-            }
-            else
+            if (Board.Tasks.Count(t => t.Name == task.Name) != 0)
             {
                 throw new ArgumentException("Такая задача уже есть в списке задач!", nameof(task));
             }
+            #endregion Проверки
+
+            Board.Tasks.Add(task);
+            Save();
         }
 
         /// <summary>
@@ -70,19 +70,19 @@ namespace TaskManager.BL.Controller
         /// <param name="nameTask"> Наименование задача. </param>
         public void DelTask(string nameTask)
         {
+            #region Проверки
             if (string.IsNullOrWhiteSpace(nameTask))
             {
                 throw new ArgumentNullException("Имя задачи не может быть пустым!", nameof(nameTask));
             }
             if (Board.Tasks.Count(t => t.Name == nameTask) == 0)
             {
-                throw new ArithmeticException("Такой задачи нет в списке задач!");
+                throw new ArgumentException("Такой задачи нет в списке задач!");
             }
-            else
-            {
-                Board.Tasks.RemoveAll(b => b.Name == nameTask);
-                Save();
-            }
+            #endregion Проверки
+
+            Board.Tasks.RemoveAll(b => b.Name == nameTask);
+            Save();
 
         }
 
@@ -102,9 +102,13 @@ namespace TaskManager.BL.Controller
             {
                 throw new ArgumentNullException("Имя задачи не  может быть пустым!", nameof(nameTask));
             }
-            if(userController.TaskOfUser != null)
+            if (userController.TaskOfUser != null)
             {
                 throw new ArgumentException("У пользователя уже есть активная задача!");
+            }
+            if (Board.Tasks.Count(t => t.Name == nameTask) == 0)
+            {
+                throw new ArgumentException("Такой задачи нет в списке задач!");
             }
             #endregion Проверки
 
@@ -147,20 +151,21 @@ namespace TaskManager.BL.Controller
             {
                 throw new ArgumentNullException("Контроллер пользователя не может быть null!", nameof(userController));
             }
-
             if (string.IsNullOrWhiteSpace(nameTask))
             {
                 throw new ArgumentNullException("Имя задачи не  может быть пустым!", nameof(nameTask));
             }
-
             if (userController.TaskOfUser == null)
             {
                 throw new ArgumentException("У пользователя нету активных задач!");
             }
-
             if (userController.TaskOfUser.Name != nameTask)
             {
                 throw new ArgumentException($"У пользователя активна другая задача: \"{userController.TaskOfUser.Name}\"");
+            }
+            if (Board.Tasks.Count(t => t.Name == nameTask) == 0)
+            {
+                throw new ArgumentException("Такой задачи нет в списке задач!");
             }
             #endregion Проверки
 
@@ -171,7 +176,6 @@ namespace TaskManager.BL.Controller
             {
                 throw new ArgumentException("У даски нет текущей задачи!");
             }
-
             if (task.ExecutorsNik != userController.NikOfUser)
             {
                 throw new ArgumentException($"У задачи другой исполнитель: {task.ExecutorsNik}");
@@ -188,6 +192,124 @@ namespace TaskManager.BL.Controller
                 IsPasses = false;
             }
             task.Status = Status.Complited;
+            Save();
+        }
+
+        /// <summary>
+        /// Добавить подзадачу.
+        /// </summary>
+        /// <param name="nameTask"> Имя задачи, в которую требуется добавить подзадачу. </param>
+        /// <param name="subtask"> Подзадача. </param>
+        public void AddSubTask(Task task, Task subtask)
+        {
+            #region Проверки
+            if (task == null)
+            {
+                throw new ArgumentNullException("Задача не может быть null!", nameof(task));
+            }
+            if (subtask == null)
+            {
+                throw new ArgumentNullException("Подзадача не может быть null!", nameof(subtask));
+            }
+            if (task.SubTasks == null)
+            {
+                task.SubTasks = new List<Task>();
+            }
+            else if (task.SubTasks.Count(s => s.Name == subtask.Name) != 0)
+            {
+                throw new ArgumentException("Такая подзадача уже есть в списке подзадачзадач!", nameof(subtask));
+            }
+            #endregion Проверки
+
+            subtask.Status = Status.Performed;
+            task.SubTasks.Add(subtask);
+            Save();
+        }
+
+        /// <summary>
+        /// Удалить подзадачу.
+        /// </summary>
+        /// <param name="nameTask"> Имя задачи, из которой требуется удалить подзадачу. </param>
+        /// <param name="nameSubtask"> Имя подзадачи. </param>
+        public void DelSubTask(Task task, string nameSubtask)
+        {
+            #region Проверки
+            if (task == null)
+            {
+                throw new ArgumentNullException("Задача не может быть null!", nameof(task));
+            }
+            if (string.IsNullOrWhiteSpace(nameSubtask))
+            {
+                throw new ArgumentNullException("Имя подзадачи не может быть пустым!", nameof(nameSubtask));
+            }
+            if (task.SubTasks == null)
+            {
+                throw new ArgumentNullException("Список подзадач пуст!");
+            }
+            if (task.SubTasks.Count(s => s.Name == nameSubtask) == 0)
+            {
+                throw new ArgumentException("Такой подзадачи нет в списке подзадач");
+            }
+            #endregion Проверки
+
+            task.SubTasks.RemoveAll(s => s.Name == nameSubtask);
+
+            if (task.SubTasks.Count == 0)
+            {
+                task.SubTasks = null;
+            }
+
+            Save();
+
+        }
+
+        /// <summary>
+        /// Получить список подзадач.
+        /// </summary>
+        /// <param name="nameTask"> Имя задачи у которй требуется взять список подзадач. </param>
+        /// <returns></returns>
+        public ReadOnlyCollection<Task> GetSubTasks(Task task)
+        {
+            if (task == null)
+            {
+                throw new ArgumentNullException("Задача не может быть null!", nameof(task));
+            }
+
+            return task.SubTasks?.AsReadOnly();
+        }
+
+        /// <summary>
+        /// пометить подзадачу как выполненную.
+        /// </summary>
+        /// <param name="userController"> Контроллер пользователя. </param>
+        /// <param name="task"> Задача, у которой мы хотим выполнить подзадачу. </param>
+        /// <param name="subTask"> Подзадача, которую нужно пометить как выполненную. </param>
+        public void PassSubTask(UserController userController, Task task, Task subTask)
+        {
+            #region Проверки
+            if (userController == null)
+            {
+                throw new ArgumentNullException("Контроллер пользователя не может быть null!", nameof(userController));
+            }
+            if (task == null)
+            {
+                throw new ArgumentNullException("Задача не может быть null!", nameof(task));
+            }
+            if (userController.TaskOfUser == null)
+            {
+                throw new ArgumentException("У пользователя нету активных задач!");
+            }
+            if (userController.TaskOfUser.Name != task.Name)
+            {
+                throw new ArgumentException($"У пользователя активна другая задача: \"{userController.TaskOfUser.Name}\"");
+            }
+            if (task.ExecutorsNik != userController.NikOfUser)
+            {
+                throw new ArgumentException($"У задачи другой исполнитель: {task.ExecutorsNik}");
+            }
+            #endregion Проверки
+
+            subTask.Status = Status.Complited;
             Save();
         }
 

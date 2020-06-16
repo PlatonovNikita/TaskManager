@@ -12,10 +12,7 @@ namespace TaskManager.BL.Model
     {
         NotPerformed = 0,
         Performed = 1,
-        Complited = 2,
-        S1 = NotPerformed,
-        S2 = Performed,
-        S3 = Complited
+        Complited = 2
     }
 
     /// <summary>
@@ -49,15 +46,16 @@ namespace TaskManager.BL.Model
         /// <summary>
         /// Ник исполниителя задачи.
         /// </summary>
-        public string ExecutorsNik { 
-            get 
-            { 
-                return executorsNik; 
-            } 
-            set 
+        public string ExecutorsNik
+        {
+            get
+            {
+                return executorsNik;
+            }
+            set
             {
                 executorsNik = (!string.IsNullOrWhiteSpace(value)) ? value : throw new ArgumentNullException("Ник не  может быть пустым!");
-            } 
+            }
         }
 
         Status status = Status.NotPerformed;
@@ -77,7 +75,6 @@ namespace TaskManager.BL.Model
                 {
                     throw new ArgumentException("Эта задача уже выполненна!");
                 }
-
                 if (value == Status.Complited && status == Status.NotPerformed)
                 {
                     throw new ArgumentException("Эта задача никем не выполнялась!");
@@ -101,7 +98,7 @@ namespace TaskManager.BL.Model
         /// <summary>
         /// Список подзадач.
         /// </summary>
-        public List<Task> SubTasks { get; } = null;
+        public List<Task> SubTasks { get; set; } = null;
 
         /// <summary>
         /// Срок исполнения.
@@ -116,7 +113,6 @@ namespace TaskManager.BL.Model
             {
                 throw new ArgumentNullException("Имя задачи не может быть пустым!", nameof(name));
             }
-
             if (deadLine < DateTime.Now)
             {
                 throw new ArgumentOutOfRangeException("Дедлайн не может быть в прошлом!", nameof(deadLine));

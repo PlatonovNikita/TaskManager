@@ -14,16 +14,16 @@ namespace TaskManager.BL.Model
         /// <summary>
         /// Имя пользвателя.
         /// </summary>
-        public string Name 
-        { 
-            get 
+        public string Name
+        {
+            get
             {
                 return name;
             }
-            set 
+            set
             {
                 name = (!string.IsNullOrWhiteSpace(value)) ? value : throw new ArgumentNullException("Имя не может быть пустым!", nameof(name));
-            } 
+            }
         }
 
         /// <summary>
@@ -56,17 +56,14 @@ namespace TaskManager.BL.Model
             {
                 throw new ArgumentNullException("Имя пользователя не модет быть пустым!", nameof(name));
             }
-
             if (string.IsNullOrWhiteSpace(nikName))
             {
                 throw new ArgumentNullException("Ник не может быть пустым!", nameof(nikName));
             }
-
             if (task == null)
             {
                 throw new ArgumentNullException("Задача не может быть null!", nameof(task));
             }
-
             if (boards == null)
             {
                 throw new ArgumentNullException("Список досок не может быть null!", nameof(boards));

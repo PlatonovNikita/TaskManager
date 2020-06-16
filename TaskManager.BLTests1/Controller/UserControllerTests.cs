@@ -65,6 +65,18 @@ namespace TaskManager.BL.Controller.Tests
         {
             // Arrange
             var userNik = Guid.NewGuid().ToString();
+            var userName = Guid.NewGuid().ToString();
+            var boardName = Guid.NewGuid().ToString();
+
+            // Act
+            var controller = new UserController(userNik);
+            controller.SetNewUser(userName);
+            controller.AddBoard(boardName);
+            var controller2 = new UserController(userNik);
+
+            // Assert
+            Assert.AreNotEqual(controller2.Boards.Count, 0);
+            Assert.AreEqual(controller2.NameOfUser, userName);
 
         }
     }

@@ -4,7 +4,6 @@ using System.Collections.ObjectModel;
 using System.IO;
 using System.Linq;
 using System.Runtime.Serialization.Formatters.Binary;
-using System.Xml.Serialization;
 using TaskManager.BL.Model;
 
 namespace TaskManager.BL.Controller
@@ -20,17 +19,17 @@ namespace TaskManager.BL.Controller
         public bool IsNewUser { get; } = false;
         public string NikOfUser => User.NikName;
         public Task TaskOfUser => User.Task;
-        public string NameOfUser 
-        { 
-            get 
-            { 
-                return User.Name; 
-            } 
-            set 
+        public string NameOfUser
+        {
+            get
+            {
+                return User.Name;
+            }
+            set
             {
                 User.Name = value;
                 Save();
-            } 
+            }
         }
 
 
@@ -46,7 +45,6 @@ namespace TaskManager.BL.Controller
             }
 
             users = GetUsersData();
-
             User = users.SingleOrDefault(user => user.NikName == nikName);
 
             if (User == null)
@@ -82,15 +80,16 @@ namespace TaskManager.BL.Controller
         public void TakeTask(BoardController boardController, Task task)
         {
             //TODO: Реализовать через интерфейс, который гарантирует у объекта есть метод TakeTask() и поле bool IsTakes 
+            #region Проверки
             if (boardController == null)
             {
                 throw new ArgumentNullException("Контроллер доски не может быть null!", nameof(boardController));
             }
-
             if (!boardController.IsTakes)
             {
                 throw new ArgumentException("PassTask должен быть вызван контроллером доски!");
             }
+            #endregion Проверки
 
             User.Task = task;
             Save();
@@ -102,39 +101,40 @@ namespace TaskManager.BL.Controller
         /// <param name="boardController"> Ссылка на контроллер доски. </param>
         public void PassTask(BoardController boardController)
         {
+            #region Проверки
             if (boardController == null)
             {
                 throw new ArgumentNullException("Контроллер доски не может быть null!", nameof(boardController));
             }
-
             if (!boardController.IsPasses)
             {
                 throw new ArgumentException("PassTask должен быть вызван контроллером доски!");
             }
+            #endregion Проверки
 
             User.Task = null;
             Save();
         }
-        
+
         /// <summary>
         /// Добавить новую доску в список доступных пользователю.
         /// </summary>
         /// <param name="nameBoard"> Имя доски. </param>
         public void AddBoard(string nameBoard)
         {
+            #region Проверки
             if (string.IsNullOrWhiteSpace(nameBoard))
             {
                 throw new ArgumentNullException("Имя доски не может быть пустым!", nameof(nameBoard));
             }
-            if (User.Boards.Count(b => b == nameBoard) == 0)
-            {
-                User.Boards.Add(nameBoard);
-                Save();
-            }
-            else
+            if (User.Boards.Count(b => b == nameBoard) != 0)
             {
                 throw new ArgumentException("Такая доска уже есть в списке!");
             }
+            #endregion
+
+            User.Boards.Add(nameBoard);
+            Save();
         }
 
         /// <summary>
@@ -169,8 +169,6 @@ namespace TaskManager.BL.Controller
             {
                 formatter.Serialize(fs, users);
             }
-
         }
-
     }
 }
