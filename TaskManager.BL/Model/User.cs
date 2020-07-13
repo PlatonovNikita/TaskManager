@@ -9,6 +9,7 @@ namespace TaskManager.BL.Model
     [Serializable]
     public class User
     {
+        public int Id { get; set; }
         #region Свойства
         string name = "";
         /// <summary>

@@ -11,8 +11,10 @@ namespace TaskManager.BL.Controller
     /// <summary>
     /// Контроллер пользователя.
     /// </summary>
-    public class UserController
+    public class UserController : BaseController
     {
+
+        const string fileName = "users.dat";
         List<User> users;
         User User { get; }
         public ReadOnlyCollection<string> Boards { get { return User.Boards.AsReadOnly(); } }
@@ -143,19 +145,7 @@ namespace TaskManager.BL.Controller
         /// <returns> Список пользователей. </returns>
         public List<User> GetUsersData()
         {
-            var formatter = new BinaryFormatter();
-
-            using (var fs = new FileStream("users.dat", FileMode.OpenOrCreate))
-            {
-                if (fs.Length != 0 && formatter.Deserialize(fs) is List<User> users)
-                {
-                    return users;
-                }
-                else
-                {
-                    return new List<User>();
-                }
-            }
+            return Load<User>(fileName) ?? new List<User>();
         }
 
         /// <summary>
@@ -163,12 +153,7 @@ namespace TaskManager.BL.Controller
         /// </summary>
         public void Save()
         {
-            var formatter = new BinaryFormatter();
-
-            using (var fs = new FileStream("users.dat", FileMode.OpenOrCreate))
-            {
-                formatter.Serialize(fs, users);
-            }
+            Save(fileName, users);
         }
     }
 }

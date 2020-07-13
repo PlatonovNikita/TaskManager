@@ -38,6 +38,11 @@ namespace TaskManager.CMD
             }
         }
 
+        /// <summary>
+        /// Меню взаимодействия с доской.
+        /// </summary>
+        /// <param name="userController"> Контроллер пользователя. </param>
+        /// <param name="boardController"> Контроллер доскии. </param>
         static void BoardMenu(UserController userController, BoardController boardController)
         {
             Console.Clear();
@@ -75,7 +80,7 @@ namespace TaskManager.CMD
                         Console.Clear();
                         if (userController.TaskOfUser == null)
                         {
-                            Console.WriteLine("У вас нету активных задач!");
+                            Console.WriteLine("У вас нет активных задач!");
                         }
                         else
                         {
@@ -84,12 +89,17 @@ namespace TaskManager.CMD
                         break;
                     default:
                         Console.Clear();
-                        Console.WriteLine("Такой команды нету!");
+                        Console.WriteLine("Такой команды нет!");
                         break;
                 }
             }
         }
 
+        /// <summary>
+        /// Меню взаимодействия с задачами на доске.
+        /// </summary>
+        /// <param name="userController"> Контроллер пользователя. </param>
+        /// <param name="boardController"> Контроллер доскии. </param>
         static void TasksMenu(UserController userController, BoardController boardController)
         {
             while (true)
@@ -115,6 +125,12 @@ namespace TaskManager.CMD
             }
         }
 
+        /// <summary>
+        /// Меню взаимодействия с задачей.
+        /// </summary>
+        /// <param name="userController"> Контроллер пользователя. </param>
+        /// <param name="boardController"> Контроллер доскии. </param>
+        /// <param name="task"> Задача. </param>
         static void TaskMenu(UserController userController, BoardController boardController, Task task)
         {
             Console.Clear();
@@ -142,7 +158,7 @@ namespace TaskManager.CMD
                         break;
                     case "2":
                         Console.Clear();
-                        Console.WriteLine($"Вы действительно хотите удалить задачу \"{task.Name}\"");
+                        Console.WriteLine($"Вы действительно хотите удалить задачу? \"{task.Name}\"");
                         if (YesOrNo())
                         {
                             boardController.DelTask(task.Name);
@@ -168,6 +184,12 @@ namespace TaskManager.CMD
             }
         }
 
+        /// <summary>
+        /// Меню взаимодействия с подзадачами.
+        /// </summary>
+        /// <param name="userController"> Контроллер пользователя. </param>
+        /// <param name="boardController"> Контроллер доскии. </param>
+        /// <param name="task"> Задача. </param>
         static void SubTasksMenu(UserController userController, BoardController boardController, Task task)
         {
             if (boardController.GetSubTasks(task) == null)
@@ -201,6 +223,13 @@ namespace TaskManager.CMD
             }
         }
 
+        /// <summary>
+        /// Меню взаимодействия с подзадачей.
+        /// </summary>
+        /// <param name="userController"> Контроллер пользователя. </param>
+        /// <param name="boardController"> Контроллер доскии. </param>
+        /// <param name="task"> Задача. </param>
+        /// <param name="subTask"> Подзадача. </param>
         static void SubTaskMenu(UserController userController, BoardController boardController, Task task, Task subTask)
         {
             Console.Clear();

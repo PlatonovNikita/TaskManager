@@ -19,9 +19,10 @@ namespace TaskManager.BL.Controller.Tests
 
             // Act
             var controller = new BoardController(nameBoard);
-            controller.AddTask(new Model.Task(nameTask, data));
+            controller.AddTask(new Task(nameTask, data));
             var controller2 = new BoardController(nameBoard);
-            var task = controller.Tasks.First();
+            var task = controller2.Tasks.First(t => t.Name == nameTask);
+
 
             // Assert
             Assert.IsNull(task.ExecutorsNik);

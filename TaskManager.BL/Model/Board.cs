@@ -9,6 +9,7 @@ namespace TaskManager.BL.Model
     [Serializable]
     public class Board
     {
+        public int Id { get; set; }
         #region Свойства
         /// <summary>
         /// Наименование доски с задачами.

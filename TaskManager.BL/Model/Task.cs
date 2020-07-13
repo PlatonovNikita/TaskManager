@@ -36,6 +36,7 @@ namespace TaskManager.BL.Model
     [Serializable]
     public class Task
     {
+        public int Id { get; set; }
         #region Свойства
         /// <summary>
         /// Имя задачи.

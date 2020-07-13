@@ -11,8 +11,9 @@ namespace TaskManager.BL.Controller
     /// <summary>
     /// Контроллер доски задач.
     /// </summary>
-    public class BoardController
+    public class BoardController : BaseController
     {
+        const string fileName = "board.dat";
         List<Board> Boards { get; }
         Board Board { get; }
         public ReadOnlyCollection<Task> Tasks { get { return Board.Tasks.AsReadOnly(); } }
@@ -61,6 +62,7 @@ namespace TaskManager.BL.Controller
             #endregion Проверки
 
             Board.Tasks.Add(task);
+            SortTasks();
             Save();
         }
 
@@ -136,6 +138,7 @@ namespace TaskManager.BL.Controller
             }
             task.ExecutorsNik = userController.NikOfUser;
             task.Status = Status.Performed;
+            SortTasks();
             Save();
         }
 
@@ -192,8 +195,39 @@ namespace TaskManager.BL.Controller
                 IsPasses = false;
             }
             task.Status = Status.Complited;
+            SortTasks();
             Save();
         }
+
+        /// <summary>
+        /// Отсортировать задачи на доске.
+        /// </summary>
+        public void SortTasks()
+        {
+            Board.Tasks.Sort(delegate (Task t1, Task t2)
+            {
+                if (t1.Status < t2.Status)
+                {
+                    return -1;
+                }
+                if (t1.Status == t2.Status)
+                {
+                    if (t1.Priority > t2.Priority)
+                    {
+                        return -1;
+                    }
+                    if (t1.Priority == t2.Priority)
+                    {
+                        if (string.Compare(t1.Name, t2.Name) < 0)
+                        {
+                            return -1;
+                        }
+                    }
+                }
+                return 1;
+            });
+        }
+
 
         /// <summary>
         /// Добавить подзадачу.
@@ -319,19 +353,7 @@ namespace TaskManager.BL.Controller
         /// <returns></returns>
         public List<Board> GetBoardsData()
         {
-            var formatter = new BinaryFormatter();
-
-            using (var fs = new FileStream("board.dat", FileMode.OpenOrCreate))
-            {
-                if (fs.Length > 0 && formatter.Deserialize(fs) is List<Board> boards)
-                {
-                    return boards;
-                }
-                else
-                {
-                    return new List<Board>();
-                }
-            }
+            return Load<Board>(fileName) ?? new List<Board>();
         }
 
         /// <summary>
@@ -339,12 +361,7 @@ namespace TaskManager.BL.Controller
         /// </summary>
         public void Save()
         {
-            var formatter = new BinaryFormatter();
-
-            using (var fs = new FileStream("board.dat", FileMode.OpenOrCreate))
-            {
-                formatter.Serialize(fs, Boards);
-            }
+            Save(fileName, Boards);
         }
 
         /// <summary>
